@@ -1,11 +1,13 @@
 //! Error structs
 
+use crypto_bigint::Uint;
+
 use crate::common::MIN_BIT_LENGTH;
 use core::{fmt, result};
 use core2::error;
 
 /// Default result struct
-pub type Result = result::Result<num_bigint::BigUint, Error>;
+pub type Result<const L: usize> = result::Result<Uint<L>, Error>;
 
 /// Error struct
 #[derive(Debug)]
@@ -20,12 +22,11 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Error::OsRngInitialization(ref err) => {
-                write!(f, "Error initializing OS random number generator: {}", err)
+                write!(f, "Error initializing OS random number generator: {err}")
             }
             Error::BitLength(length) => write!(
                 f,
-                "The given bit length is too small; must be at least {}: {}",
-                MIN_BIT_LENGTH, length
+                "The given bit length is too small; must be at least {MIN_BIT_LENGTH}: {length}"
             ),
         }
     }
